@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const validator = require('validator');
 
 const hostlerSchema = mongoose.Schema({
     name: {
@@ -13,6 +14,11 @@ const hostlerSchema = mongoose.Schema({
         index: true,
         unique: true,
         dropDups: true,
+        validate(value) {
+            if(!validator.isEmail(value)) {
+                throw new Error("Invalid E-mail address");
+            }
+        }
     },
     password: {
         type: String,
