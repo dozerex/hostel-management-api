@@ -1,13 +1,17 @@
 const express = require('express');
+require('./db/mongoose');
+
+const admin = require('./routers/admin');
+const hostler = require('./routers/hostler');
 
 const app = express();
-
-app.use(express.json());
 const port = process.env.PORT || 3000;
 
-app.get('/', async (req, res) => {
-    res.send("<h1>This is IIITL - Hostel Management API</h1>");
-})
+app.use(express.json());
+
+app.use(admin);
+app.use(hostler);
+
 
 app.listen(port, () => {
     console.log('Server is up on port '+ port);
