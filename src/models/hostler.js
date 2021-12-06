@@ -27,6 +27,14 @@ const hostlerSchema = mongoose.Schema({
     }
 })
 
+hostlerSchema.methods.toJSON = function () {
+    const user = this;
+    const userObject = user.toObject();
+    
+    delete userObject.password;
+    return userObject;
+}
+
 
 hostlerSchema.pre('save', async function (next) {
     const user = this;
