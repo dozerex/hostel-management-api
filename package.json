@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/dozerex/hostel-management-api/issues"
   },
-  "homepage": "https://github.com/dozerex/hostel-management-api#readme"
+  "homepage": "https://github.com/dozerex/hostel-management-api#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
 }
