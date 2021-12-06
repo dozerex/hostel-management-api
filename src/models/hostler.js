@@ -15,6 +15,7 @@ const hostlerSchema = mongoose.Schema({
         index: true,
         unique: true,
         dropDups: true,
+        lowercase: true,
         validate(value) {
             if(!validator.isEmail(value)) {
                 throw new Error("Invalid E-mail address");
@@ -24,13 +25,14 @@ const hostlerSchema = mongoose.Schema({
     password: {
         type: String,
         required: true,
+        minlength: 8
     }
 })
 
 hostlerSchema.methods.toJSON = function () {
     const user = this;
     const userObject = user.toObject();
-    
+
     delete userObject.password;
     return userObject;
 }
