@@ -1,7 +1,9 @@
 const express = require('express');
 const Hostler = require('../models/hostler');
 
-const router = express.Router();
+const auth = require('../middleware/hostlerAuth');
+
+const router = new express.Router();
 
 router.post('/', async (req, res) => {
     res.send("Hello hostlers");
@@ -13,8 +15,12 @@ router.post('/login', async (req, res) => {
         const token = await user.generateAuthToken();
         res.send({user, token});
     } catch(e) {
-        res.send(400).send(e);
+        res.status(400).send(e);
     }
+})
+
+router.get('/me', auth, async (req, res) => {
+    res.send(req.user);
 })
 
 module.exports = router;
