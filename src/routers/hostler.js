@@ -1,7 +1,6 @@
 const express = require('express');
 const Hostler = require('../models/hostler');
 
-
 const auth = require('../middleware/hostlerAuth');
 
 const router = new express.Router();
@@ -11,9 +10,28 @@ router.post('/', async (req, res) => {
 })
 
 
+// router.post('/islogined', async (req, res) => {
+//     try {
+//         console.log("Hello")
+//         const token = req.body.token;
+//         console.log(token);
+//         const decoded = jwt.verify(token, process.env.JWT_KEY);
+//         const user = await Hostler.findOne({ _id: decoded._id, 'tokens.token': token });
+//         if(!user) {
+//             throw new Error();
+//         }
+//         console.log(user);
+//         res.send("hello");
+//     } catch(e) {
+//         // console.log("uesr", user)
+//         res.send("how");
+//     }
+// })
+
+
 router.use('/login', async (req, res, next) => {
     try {
-        const token = req.cookies.token;
+        const token = req.body.token;
         console.log(token);
         // const token = req.header('Authorization').replace('Bearer ','');
         const decoded = jwt.verify(token, process.env.JWT_KEY);
@@ -29,17 +47,18 @@ router.use('/login', async (req, res, next) => {
     }
 })
 
+
 router.post('/login', async (req, res) => {
     try {
         const user = await Hostler.findByCredentials(req.body.email, req.body.password);
         console.log("kajsdofh iaodsfo")
         const token = await user.generateAuthToken();
-        res.cookie("token", token, {
-            // httpOnly: true,
-            expires: new Date(Date.now()+240000),
-            // secure: true    
-        })
-        res.send(user);
+        // res.cookie("token", token, {
+        //     // httpOnly: true,
+        //     expires: new Date(Date.now()+60000),
+        //     // secure: true    
+        // })
+        res.send({user, token});
     } catch(e) {
         res.status(400).send(e);
     }
