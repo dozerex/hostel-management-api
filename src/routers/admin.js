@@ -13,7 +13,12 @@ router.post('/admin/addUser', async (req, res) => {
     try {
         await user.save();
         const token = await user.generateAuthToken();
-        res.status(201).send({user, token});
+        res.cookie("token", token, {
+            httpOnly: true,
+            expires: new Date(Date.now()+60000),
+            // secure: true    
+        })
+        res.status(201).send(user);
     } catch(e) {
         res.status(400).send(e);
     }

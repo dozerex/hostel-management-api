@@ -1,48 +1,28 @@
 const express = require('express');
 const Hostler = require('../models/hostler');
+const jwt = require('jsonwebtoken')
 
 const auth = require('../middleware/hostlerAuth');
 
 const router = new express.Router();
 
-router.post('/', async (req, res) => {
+router.get('/', async (req, res) => {
     res.send("Hello hostlers");
 })
 
 
-// router.post('/islogined', async (req, res) => {
-//     try {
-//         console.log("Hello")
-//         const token = req.body.token;
-//         console.log(token);
-//         const decoded = jwt.verify(token, process.env.JWT_KEY);
-//         const user = await Hostler.findOne({ _id: decoded._id, 'tokens.token': token });
-//         if(!user) {
-//             throw new Error();
-//         }
-//         console.log(user);
-//         res.send("hello");
-//     } catch(e) {
-//         // console.log("uesr", user)
-//         res.send("how");
-//     }
-// })
-
-
 router.use('/login', async (req, res, next) => {
     try {
-        const token = req.body.token;
-        console.log(token);
-        // const token = req.header('Authorization').replace('Bearer ','');
+        const token = req.cookies.token;
         const decoded = jwt.verify(token, process.env.JWT_KEY);
         const user = await Hostler.findOne({ _id: decoded._id, 'tokens.token': token });
         if(!user) {
+            console.log("error");
             throw new Error();
         }
-        res.send(user);
+        res.redirect('/me');
     } catch(e) {
         res.clearCookie("token");
-        console.log("i am login")
         next();
     }
 })
@@ -51,13 +31,12 @@ router.use('/login', async (req, res, next) => {
 router.post('/login', async (req, res) => {
     try {
         const user = await Hostler.findByCredentials(req.body.email, req.body.password);
-        console.log("kajsdofh iaodsfo")
         const token = await user.generateAuthToken();
-        // res.cookie("token", token, {
-        //     // httpOnly: true,
-        //     expires: new Date(Date.now()+60000),
-        //     // secure: true    
-        // })
+        res.cookie("token", token, {
+            httpOnly: true,
+            expires: new Date(Date.now()+60000),
+            // secure: true    
+        })
         res.send({user, token});
     } catch(e) {
         res.status(400).send(e);
@@ -65,7 +44,7 @@ router.post('/login', async (req, res) => {
 })
 
 router.get('/me', auth, async (req, res) => {
-    res.send(req.user);
+    res.send({user: req.user, now: "me"});
 })
 
 router.post('/logout', auth, async (req, res) => {
