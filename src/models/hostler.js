@@ -28,6 +28,11 @@ const hostlerSchema = mongoose.Schema({
         required: true,
         minlength: 8
     },
+    room: {
+        type: mongoose.Schema.Types.ObjectId,
+        required: true,
+        ref: 'Complaint'
+    },
     tokens: [{
         token: {
             type: String,
