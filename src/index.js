@@ -6,6 +6,7 @@ const cookieParser = require('cookie-parser');
 
 const admin = require('./routers/admin');
 const hostler = require('./routers/hostler');
+const room = require('./routers/room');
 
 const app = express();
 const port = process.env.PORT;
@@ -19,6 +20,7 @@ app.use(cors({
 
 app.use(admin);
 app.use(hostler);
+app.use(room);
 
 
 app.listen(port, () => {

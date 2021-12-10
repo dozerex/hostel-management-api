@@ -3,6 +3,8 @@ const validator = require('validator');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
+const Room = require('./room')
+
 const hostlerSchema = mongoose.Schema({
     name: {
         type: String,
@@ -28,11 +30,11 @@ const hostlerSchema = mongoose.Schema({
         required: true,
         minlength: 8
     },
-    // room: {
-    //     type: mongoose.Schema.Types.ObjectId,
-    //     required: true,
-    //     ref: 'Complaint'
-    // },
+    room: {
+        type: mongoose.Schema.Types.ObjectId,
+        required: true,
+        ref: 'Room'
+    },
     tokens: [{
         token: {
             type: String,
@@ -86,8 +88,21 @@ hostlerSchema.pre('save', async function (next) {
     if(user.isModified('password')) {
         user.password = await bcrypt.hash(user.password, 8);
     }
+    if(user.isModified('room')) {
+        // console.log(user.room);
+        const room = await Room.findById(user.room);
+        console.log(user.getChanges());
+        room.occupied+=1;
+        await room.save();
+    }
     next();
-    
+})
+
+hostlerSchema.pre('remove', async function (next) {
+    const user = this;
+    const room = await Room.findById(user.room);
+    room.occupied-=1;
+    await room.save();
 })
 
 const Hostler = mongoose.model('Hostler', hostlerSchema);

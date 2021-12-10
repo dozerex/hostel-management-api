@@ -1,8 +1,10 @@
 const mongoose = require('mongoose');
 
+const Hostler = require('./hostler');
+
 const roomSchema = mongoose.Schema({
-    RoomNumber: {
-        type: String,
+    roomNumber: {
+        type: Number,
         required: true,
         index: true,
         dropDups: true,
@@ -11,22 +13,35 @@ const roomSchema = mongoose.Schema({
     capacity: {
         type: Number,
         required: true,
+        default: 3,
         minvalue: 1,
         maxvalue: 3,
     },
     occupied: {
         type: Number,
         required: true,
-        minvalue: 1,
+        default: 0,
+        minvalue: 0,
         maxvalue: 3,
+    },
+    rem: {
+        type: Number,
+        maxvalue: 3,
+        minvalue: 0
     }
 })
 
 roomSchema.virtual('hostlers', {
     ref: 'Hostler',
     localField: '_id',
-    ForeignField: 'room',
+    foreignField: 'room',
 });
+
+roomSchema.pre('save', async function (next) {
+    const user = this;
+    user.rem = user.capacity - user.occupied;
+    next();
+})
 
 const Room = mongoose.model('Room', roomSchema);
 
