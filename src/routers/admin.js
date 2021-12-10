@@ -4,7 +4,7 @@ const User = require('../models/hostler')
 
 const router = new express.Router();
 
-router.post('/admin', async (req, res) => {
+router.get('/admin', async (req, res) => {
     res.send("<h1>This is IIITL - Hostel Management API</h1>");
 })
 
