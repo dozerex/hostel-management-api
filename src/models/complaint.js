@@ -37,4 +37,6 @@ const complaintSchema = mongoose.Schema({
     timestamps: true
 });
 
-mongoose.model('Complaint', complaintSchema);
+const Complaint = mongoose.model('Complaint', complaintSchema);
+
+module.exports = Complaint;

@@ -39,6 +39,12 @@ const hostlerSchema = mongoose.Schema({
             required: true,
         }
     }]
+});
+
+hostlerSchema.virtual('complaints', {
+    ref: 'Complaint',
+    localField: '_id',
+    foreignField: 'owner'
 })
 
 hostlerSchema.statics.findByCredentials = async function (email, password) {

@@ -14,4 +14,20 @@ const roomSchema = mongoose.Schema({
         minvalue: 1,
         maxvalue: 3,
     },
+    occupied: {
+        type: Number,
+        required: true,
+        minvalue: 1,
+        maxvalue: 3,
+    }
 })
+
+roomSchema.virtual('hostlers', {
+    ref: 'Hostler',
+    localField: '_id',
+    ForeignField: 'room',
+});
+
+const Room = mongoose.model('Room', roomSchema);
+
+module.exports = Room;
