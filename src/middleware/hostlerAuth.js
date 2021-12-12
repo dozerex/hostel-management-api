@@ -4,7 +4,7 @@ const jwt = require('jsonwebtoken');
 
 const auth = async (req, res, next) => {
     try {
-        const token = req.cookies.token;
+        const token = req.body.token;
         const decoded = jwt.verify(token, process.env.JWT_KEY);
         const user = await Hostler.findOne({ _id: decoded._id, 'tokens.token': token });
         if(!user) {

@@ -10,6 +10,23 @@ router.get('/', async (req, res) => {
     res.send("Hello hostlers");
 })
 
+router.post('/isLogined', async (req, res) => {
+    try {
+        const token = req.body.token;
+        console.log(token);
+        const decoded = jwt.verify(token, process.env.JWT_KEY);
+        const user = await Hostler.findOne({ _id: decoded._id, 'tokens.token': token });
+        if(!user) {
+            console.log("error");
+            throw new Error();
+        }
+        res.send(user);
+    } catch(e) {
+        res.clearCookie("token");
+        res.status(400).send();
+    }
+})
+
 
 router.use('/login', async (req, res, next) => {
     try {
@@ -20,7 +37,7 @@ router.use('/login', async (req, res, next) => {
             console.log("error");
             throw new Error();
         }
-        res.redirect('/me');
+        res.send(user)
     } catch(e) {
         res.clearCookie("token");
         next();
@@ -44,13 +61,13 @@ router.post('/login', async (req, res) => {
 })
 
 router.get('/me', auth, async (req, res) => {
-    res.send({user: req.user, now: "me"});
+    res.send(req.user);
 })
 
 router.post('/logout', auth, async (req, res) => {
     try {
         req.user.tokens = req.user.tokens.filter((token) => {
-            return token.token !== req.token
+            return token.token !== req.body.token
         })
         await req.user.save();
         res.send({name: req.user.name, message: "Logout Success!"});
