@@ -40,8 +40,8 @@ roomSchema.virtual('hostlers', {
 });
 
 roomSchema.pre('save', async function (next) {
-    const user = this;
-    user.rem = user.capacity - user.occupied;
+    const room = this;
+    room.rem = room.capacity - room.occupied;
     next();
 })
 
