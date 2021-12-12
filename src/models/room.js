@@ -29,6 +29,8 @@ const roomSchema = mongoose.Schema({
         maxvalue: 3,
         minvalue: 0
     }
+}, {
+    timestamps: true,
 })
 
 roomSchema.virtual('hostlers', {

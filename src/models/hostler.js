@@ -41,13 +41,15 @@ const hostlerSchema = mongoose.Schema({
             required: true,
         }
     }]
+}, {
+    timestamps: true,
 });
 
-// hostlerSchema.virtual('complaints', {
-//     ref: 'Complaint',
-//     localField: '_id',
-//     foreignField: 'owner'
-// })
+hostlerSchema.virtual('complaints', {
+    ref: 'Complaint',
+    localField: '_id',
+    foreignField: 'owner'
+})
 
 hostlerSchema.statics.findByCredentials = async function (email, password) {
     const user = await Hostler.findOne({email});

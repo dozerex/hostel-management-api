@@ -9,6 +9,9 @@ router.get('/admin', async (req, res) => {
     res.send("<h1>This is IIITL - Hostel Management API</h1>");
 })
 
+
+// router.post('/admin/login',)
+
 router.post('/admin/addUser', async (req, res) => { 
     try {
         if(!req.body.room) {
@@ -35,7 +38,7 @@ router.post('/admin/addUser', async (req, res) => {
         const token = await user.generateAuthToken();
         res.cookie("token", token, {
             httpOnly: true,
-            expires: new Date(Date.now()+60000),
+            expires: new Date(Date.now()+300000),
             // secure: true    
         })
         res.status(201).send(user);

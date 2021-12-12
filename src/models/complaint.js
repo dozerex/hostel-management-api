@@ -14,7 +14,7 @@ const complaintSchema = mongoose.Schema({
     location: {
         type: String,
         required: true,
-        maxlength: 15
+        maxlength: 20
     },
     status: {
         type: Number,
@@ -25,8 +25,9 @@ const complaintSchema = mongoose.Schema({
             }
         }
     },
-    image: {
-        type: Buffer
+    complaintImg: {
+        type: Buffer,
+        required: true,
     },
     owner: {
         type: mongoose.Schema.Types.ObjectId,

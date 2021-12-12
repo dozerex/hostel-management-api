@@ -21,6 +21,7 @@ router.post('/admin/changeRoom', async (req, res) => {
     try {
         const email = req.body.email;
         const user = await User.findOne({ email });
+        const oldRoom = await Room.findById(user.room);
         const roomNumber = Number(req.body.room);
         console.log(roomNumber);
         const room = await Room.findOne({
@@ -30,8 +31,8 @@ router.post('/admin/changeRoom', async (req, res) => {
         user.room = room._id;
         console.log(user.room)
         await user.save();
-        room.occupied-=1;
-        room.save();
+        oldRoom.occupied-=1;
+        oldRoom.save();
         res.send(user);
     } catch(e) {
         res.status(400).send();
